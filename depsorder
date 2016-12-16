@@ -1,0 +1,10 @@
+#/bin/sh
+
+# given a list of paths to static libraries (either as arguments or piped in through stdin), produces a list of '-l' flags in the right order
+
+if [[ $# -eq 0 ]]; then
+	LIBS=$(cat /dev/stdin)
+else
+	LIBS=$@
+fi
+lorder $LIBS | tsort | while read -r line; do basename $line; done | sed 's/^lib/-l/' | sed 's/\.a$//' | tr '\n' ' '
